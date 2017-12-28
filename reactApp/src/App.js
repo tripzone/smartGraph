@@ -3,8 +3,17 @@ import logo from './logo.svg';
 import './App.css';
 import * as firebase from "firebase";
 import MobileDetect from "mobile-detect"
+import {  XYPlot, XAxis,
+  YAxis,VerticalBarSeries,
+  HorizontalGridLines,
+  VerticalGridLines,
+  LineSeries} from 'react-vis';
+import {curveCatmullRom} from 'd3-shape';
+import '../node_modules/react-vis/dist/style.css';
+
 
 const md = new MobileDetect(window.navigator.userAgent);
+const options = [{id:1, name:"Electronics"}, {id:2, name:"Clothing"}, {id:3, name:"Automotives"}]
 
 class App extends Component {
 
@@ -18,6 +27,14 @@ class App extends Component {
       deviceCounts:{
         mobile: null,
         desktop: null
+      },
+      deviceBreakdown:{
+        mobile1: null,
+        mobile2: null,
+        mobile3: null,
+        desktop1: null,
+        desktop2: null,
+        desktop3: null,
       }
     }
   }
@@ -28,16 +45,33 @@ class App extends Component {
     database.on('value', snap=>{
       const data = snap.val()
       const arrayLength = (Object.keys(data).length);
-      const mobileCount = Object.keys(data).filter(x=>data[x].device =='mobile').length
-      const desktopCount = Object.keys(data).filter(x=>data[x].device =='desktop').length
 
+      // ["mobile", "desktop"].forEach(device=>{
+      //   options.forEach(option=>{
+      //     const (device+option.id) = Object.keys(data).filter(x=>{return (data[x].device == device) && (data[x].category == 2)}).length
+      //   })
+      // })
+      const mobile1 = Object.keys(data).filter(x=>{return (data[x].device =='mobile') && (data[x].category =='1')}).length
+      const mobile2 = Object.keys(data).filter(x=>{return (data[x].device =='mobile') && (data[x].category =='2')}).length
+      const mobile3 = Object.keys(data).filter(x=>{return (data[x].device =='mobile') && (data[x].category =='3')}).length
+      const desktop1 = Object.keys(data).filter(x=>{return (data[x].device =='desktop') && (data[x].category =='1')}).length
+      const desktop2 = Object.keys(data).filter(x=>{return (data[x].device =='desktop') && (data[x].category =='2')}).length
+      const desktop3 = Object.keys(data).filter(x=>{return (data[x].device =='desktop') && (data[x].category =='3')}).length
+      const mobileCount = mobile1 + mobile2 + mobile3
+      const desktopCount = desktop1 + desktop2 + desktop3
+
+      console.log(desktop1)
       this.setState({length: arrayLength, userData: data})
       this.setState({deviceCounts: {desktop: desktopCount, mobile: mobileCount}})
+      this.setState({deviceBreakdown: {mobile1, mobile2, mobile3, desktop1, desktop2, desktop3}})
+
     })
     this.setState({
       device: md.mobile() ? "mobile" : "desktop",
       loaded: true
     });
+
+
   }
 
   buttonPress = (num) => {
@@ -48,21 +82,48 @@ class App extends Component {
   });
   }
 
+
   render() {
+
     return this.state.loaded ? (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
         <h1>{this.state.length}</h1>
         <h3> {this.state.device}</h3>
         <h2> Desktop Clicks: {this.state.deviceCounts.desktop}</h2>
         <h2> Mobile Clicks: {this.state.deviceCounts.mobile}</h2>
-        <button onClick={() => this.buttonPress(1)}>Kasra</button>
+        <button onClick={() => this.buttonPress(1)}>Electronics</button>  
+        <button onClick={() => this.buttonPress(2)}>Clothing</button>  
+        <button onClick={() => this.buttonPress(3)}>Automotives</button>  
+
+        <XYPlot
+          xType="ordinal"
+          width={300}
+          height={300}
+          xDistance={100}
+          >
+          <VerticalGridLines />
+          <HorizontalGridLines />
+          <XAxis />
+          <YAxis />
+          <VerticalBarSeries
+            data={[
+              {x: 'Mobile', y: this.state.deviceBreakdown.mobile1},
+              {x: 'Desktop', y: this.state.deviceBreakdown.desktop1},
+            ]}/>
+            <VerticalBarSeries
+            data={[
+                {x: 'Mobile', y: this.state.deviceBreakdown.mobile2},
+                {x: 'Desktop', y: this.state.deviceBreakdown.desktop2},
+            ]}/>
+            <VerticalBarSeries
+              data={[
+                  {x: 'Mobile', y: this.state.deviceBreakdown.mobile3},
+                  {x: 'Desktop', y: this.state.deviceBreakdown.desktop3},
+              ]}/>
+        </XYPlot>
       </div>
     ) : (<div>loading</div>)
   }
