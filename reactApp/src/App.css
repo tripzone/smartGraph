@@ -26,3 +26,33 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.graph {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+.Automotives {
+  background-color: navy;
+  color: white;
+  width:80%;
+  height:40px;
+  margin:5px;
+}
+
+.Clothing {
+  background-color: rgb(124,199,226);
+  color: white;
+  width:80%;
+  height:40px;
+  margin:5px;
+}
+
+.Electronics {
+  background-color: rgb(31,147,153);
+  color: white;
+  width:80%;
+  height:40px;
+  margin:5px;
+}
