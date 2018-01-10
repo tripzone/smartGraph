@@ -17,7 +17,7 @@ exports.addMessage = functions.https.onRequest((req, res) => {
 	const original = req.body;
 	console.log(req.body)
 	admin.database().ref('/messages').on("value", data => {
-		console.log('here it is body:', data.val())
+		console.log('here it is buddy:', data.val())
 	})
 
 	// Push the new message into the Realtime Database using the Firebase Admin SDK.
