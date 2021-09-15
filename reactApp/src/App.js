@@ -10,9 +10,8 @@ import {  XYPlot, XAxis,
   LineSeries} from 'react-vis';
 import {curveCatmullRom} from 'd3-shape';
 import '../node_modules/react-vis/dist/style.css';
-
-// const pythonServer = "http://localhost:600"
-const pythonServer = "http://777d0423.ngrok.io"
+// const pythonServer = "http://localhost:300"
+const pythonServer = "http://52.206.147.144:3000"
 const md = new MobileDetect(window.navigator.userAgent);
 
 
@@ -163,7 +162,7 @@ class App extends Component {
               ]}/>
           </XYPlot>
         </div>
-        <button onClick={() => this.trainModel()}>Train</button>
+        { this.state.device == "desktop" ? <button onClick={() => this.trainModel()}>Train</button> : null }
 
       </div>
     ) : (<div>loading</div>)

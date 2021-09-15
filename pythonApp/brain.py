@@ -12,7 +12,7 @@ import pyrebase
 config = json.load(open('./private/config.json'))
 firebase = pyrebase.initialize_app(config)
 db = firebase.database()
-
+print('numpy version', np.version.version)
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
